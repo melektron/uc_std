@@ -16,7 +16,8 @@ A universal representation of GPIO pins and their functionality
 
 #if defined(UC_PLATFORM_STM32F4)
 #include <stm32f4xx_hal.h>
-#elif defined(UC_PLATFORM_STM32F4)    // maybe?
+#define UC_GPIO_NO_INTERRUPT ((IRQn_Type)-255)
+#elif defined(UC_PLATFORM_ESP32)    // maybe?
 // to be done
 #endif
 
@@ -42,6 +43,20 @@ namespace uc
          */
         bool read();
 
+        /**
+         * @brief disables the interrupt channel
+         * of the pin if it's interrupt channel was specified, does
+         * nothing otherwise.
+         */
+        void disableInterrupt();
+
+        /**
+         * @brief enables the interrupt channel
+         * of the pin if it's interrupt channel was specified, does
+         * nothing otherwise.
+         */
+        void enableInterrupt();
+
 
         // == framework specific API
 
@@ -49,6 +64,7 @@ namespace uc
         
         GPIO_TypeDef* port;
         uint16_t pin;
+        IRQn_Type it_channel;
 
         /**
          * @brief Construct a new STM32 Pin object
@@ -58,7 +74,8 @@ namespace uc
          */
         Pin(
             GPIO_TypeDef* _port,
-            uint16_t _pin
+            uint16_t _pin,
+            IRQn_Type _it_channel = UC_GPIO_NO_INTERRUPT
         );
 
         #endif
