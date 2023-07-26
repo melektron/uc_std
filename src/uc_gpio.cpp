@@ -52,6 +52,26 @@ namespace uc
         HAL_NVIC_EnableIRQ(it_channel);
     }
 
+    void Pin::clearPendingInterrupt()
+    {
+        if (it_channel == UC_GPIO_NO_INTERRUPT)
+            return;
+
+        // Implemented according to:
+        // https://community.st.com/t5/stm32-mcu-products/exti-pending-interrupt-exti-pr1-still-getting-serviced-even-when/td-p/322146
+
+        // This loop only runs once usually
+        while (HAL_NVIC_GetPendingIRQ(it_channel))
+        {
+            // the important part here is this macro which is needed
+            // because just clearing the pending bit with the function below would cause it to
+            // immediately be set again by hardware
+            __HAL_GPIO_EXTI_CLEAR_IT(pin);
+            // this call is also needed
+            HAL_NVIC_ClearPendingIRQ(it_channel);
+        }
+    }
+
 #elif defined(UC_PLATFORM_STM32F4)    // maybe?
 // to be done
 #endif

@@ -57,6 +57,15 @@ namespace uc
          */
         void enableInterrupt();
 
+        /**
+         * @brief clears a possible pending interrupt. This is useful
+         * when something triggered the interrupt while it was disabled.
+         * This would cause the interrupt to fire as soon as it is
+         * enabled again, which you may not want in certain circumstances.
+         * If the interrupt channel wasn't specified, this does nothing.
+         */
+        void clearPendingInterrupt();
+
 
         // == framework specific API
 
